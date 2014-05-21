@@ -47,6 +47,15 @@ public:
     float iSpeedY;
     float iSpeedZ;
 
+    short iMotorAccX;
+    short iMotorAccY;
+    short iMotorAccZ;
+    short iMotorDecX;
+    short iMotorDecY;
+    short iMotorDecZ;
+    float fStartSpeedX;
+    float fStartSpeedY;
+    float fStartSpeedZ;
     float iPitchX;
     float iPitchY;
     float iPitchZ;

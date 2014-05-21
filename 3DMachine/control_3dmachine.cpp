@@ -43,9 +43,10 @@ void Control_3DMachine::on_pushButton_released()
             qDebug("Check file head:%s!", strTmp.toStdString().c_str());
             if( !strTmp.compare("#wayon 3D machine control data")){
                 strTmp=tStream.readLine();
-                if( strTmp.contains("TimeInter=")){
-                    dataProcess.iTimeInterval = strTmp.toInt();
-                    qDebug("TimeInterval:%s!iTimeInterval=%d!", strTmp.toStdString().c_str(), dataProcess.iTimeInterval);
+                if( strTmp.contains("TimeInter="))
+                {
+                    dataProcess.iTimeInterval = strTmp.right(strTmp.length() - strlen("TimeInter=")).toInt();
+                    qDebug("TimeInterval:%s!iTimeInterval=%d!", strTmp.right(strTmp.length() - strlen("TimeInter=")).toStdString().c_str(), dataProcess.iTimeInterval);
                     if(dataProcess.parse(tStream) > 0){
                         ui->lineEdit->setText(fileName);
                         ui->label_2->setText("文件已加载");
@@ -148,14 +149,14 @@ bool Control_3DMachine::sendQuery(const char* szCMD, unsigned int iLen)
 {
     char szCmd[iLen + 3];
     modbusPro.buildPacket(szCmd, szCMD, iLen);
-    qDebug("Try Cmd szCmd:");
-    for(int i=0; i<iLen+2;i++){
-        qDebug("%02x", (char)szCmd[i]);
-    }
+    //    qDebug("Try Cmd szCmd:");
+    //    for(int i=0; i<iLen+2;i++){
+    //        qDebug("%02x", (char)szCmd[i]);
+    //    }
     int iCount = 0;
     if ((iCount = comModbus->write(szCmd, iLen+2)))
     {
-        qDebug("Write cmd success Len:%d -- %d!", iLen, iCount);
+        //qDebug("Write cmd success Len:%d -- %d!", iLen, iCount);
         return true;
     }
     qDebug("Write cmd fail Len:%d -- %d!", iLen, iCount);
@@ -374,6 +375,249 @@ bool Control_3DMachine::getParamsSpeed()
     return false;
 }
 
+bool Control_3DMachine::getParamMotorAccX()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x01, 0x00, 0x01};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getAccXResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamMotorAccY()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x02, 0x00, 0x01};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getAccYResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamMotorAccZ()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x03, 0x00, 0x01};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getAccZResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamMotorDecX()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x04, 0x00, 0x02};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getDecXResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamMotorDecY()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x05, 0x00, 0x02};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getDecYResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamMotorDecZ()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szCoeQuery[] = {0xCC, 0x03, 0x00, 0x06, 0x00, 0x02};
+    if (sendQuery(szCoeQuery, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (getDecZResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamStartSpeedX()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szStartSpeed[] = {0xCC, 0x03, 0x00, 0x5E, 0x00, 0x02};
+    if (sendQuery(szStartSpeed, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (getStartSpeedXResp())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamStartSpeedY()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szStartSpeed[] = {0xCC, 0x03, 0x00, 0x60, 0x00, 0x02};
+    if (sendQuery(szStartSpeed, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (getStartSpeedYResp())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::getParamStartSpeedZ()
+{
+    modbusPro.m_strReadBuf.clear();
+    const char szStartSpeed[] = {0xCC, 0x03, 0x00, 0x62, 0x00, 0x02};
+    if (sendQuery(szStartSpeed, 6))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (getStartSpeedZResp())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
 bool Control_3DMachine::setMachineSpeedX(float fSpeed)
 {
     modbusPro.m_strReadBuf.clear();
@@ -550,7 +794,124 @@ bool Control_3DMachine::getSpeedResponse()
         return true;
     }else
     {
-        qDebug("Something wrong with Coefficient response data!");
+        qDebug("Something wrong with Speed response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getAccXResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorAccX();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with ACC X response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getAccYResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorAccY();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with ACC Y response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getAccZResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorAccZ();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with ACC Z response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getDecXResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorDecX();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with Dec X response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getDecYResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorDecY();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with Dec Y response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getDecZResponse()
+{
+    if(modbusPro.checkResponse())
+    {
+        setMotorDecZ();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with Dec Z response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getStartSpeedXResp()
+{
+    if(modbusPro.checkResponse())
+    {
+        setStartSpeedX();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with StartSpeed X response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getStartSpeedYResp()
+{
+    if(modbusPro.checkResponse())
+    {
+        setStartSpeedY();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with StartSpeed Y response data!");
+    }
+    return false;
+}
+
+bool Control_3DMachine::getStartSpeedZResp()
+{
+    if(modbusPro.checkResponse())
+    {
+        setStartSpeedZ();
+        return true;
+    }else
+    {
+        qDebug("Something wrong with StartSpeed Z response data!");
     }
     return false;
 }
@@ -573,6 +934,96 @@ void Control_3DMachine::setSpeedParams()
     //        qDebug("%02x", szTmp[i]);
     //    }
     modbusPro.iSpeedZ =modbusPro.getFloat(szTmp);
+}
+
+void Control_3DMachine::setMotorAccX()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorAccX = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setMotorAccY()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorAccY = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setMotorAccZ()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorAccZ = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setMotorDecX()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorDecX = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setMotorDecY()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorDecY = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setMotorDecZ()
+{
+    unsigned char szTmp[3];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  2);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.iMotorDecZ = modbusPro.getReg(szTmp);
+}
+
+void Control_3DMachine::setStartSpeedX()
+{
+    unsigned char szTmp[5];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  4);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.fStartSpeedX = modbusPro.getFloat(szTmp);
+}
+
+void Control_3DMachine::setStartSpeedY()
+{
+    unsigned char szTmp[5];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  4);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.fStartSpeedY = modbusPro.getFloat(szTmp);
+}
+
+void Control_3DMachine::setStartSpeedZ()
+{
+    unsigned char szTmp[5];
+    memcpy(szTmp, modbusPro.m_strReadBuf.c_str() + 3,  4);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x", szTmp[i]);
+    //    }
+    modbusPro.fStartSpeedZ = modbusPro.getFloat(szTmp);
 }
 
 void Control_3DMachine::on_pushButton_3_released()
@@ -1113,7 +1564,7 @@ bool Control_3DMachine::relativeDisXSet(float fDis)
         unsigned int iCounter = 0;
         while(iCounter < 5){
             t.start();
-            while(t.elapsed()<200){
+            while(t.elapsed()<100){
                 QCoreApplication::processEvents();
             }
             if (modbusPro.checkResponse())
@@ -1141,7 +1592,7 @@ bool Control_3DMachine::relativeDisYSet(float fDis)
         unsigned int iCounter = 0;
         while(iCounter < 5){
             t.start();
-            while(t.elapsed()<200){
+            while(t.elapsed()<100){
                 QCoreApplication::processEvents();
             }
             if (modbusPro.checkResponse())
@@ -1169,7 +1620,7 @@ bool Control_3DMachine::relativeDisZSet(float fDis)
         unsigned int iCounter = 0;
         while(iCounter < 5){
             t.start();
-            while(t.elapsed()<200){
+            while(t.elapsed()<100){
                 QCoreApplication::processEvents();
             }
             if (modbusPro.checkResponse())
@@ -1329,8 +1780,270 @@ bool Control_3DMachine::setMachineSubdivisionZ(short iSubdivision)
     return false;
 }
 
+bool Control_3DMachine::setMachineAccX(short iAccX)
+{
+    qDebug("AccX value to set:%d!", iAccX);
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x01, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iAccX);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineAccY(short iAccY)
+{
+    qDebug("AccY value to set:%d!", iAccY);
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x02, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iAccY);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        //        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineAccZ(short iAccZ)
+{
+    qDebug("AccZ value to set:%d!", iAccZ);
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x03, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iAccZ);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        //        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineDecX(short iDecX)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x04, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iDecX);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        //        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineDecY(short iDecY)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x05, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iDecY);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        //        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineDecZ(short iDecZ)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x06, 0x00, 0x01, 0x02, 0x00, 0x00};
+    modbusPro.setReg((unsigned char*)szRelativeQuery + 7, iDecZ);
+    if (sendQuery(szRelativeQuery, 9))
+    {
+        //        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<100){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                //                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    qDebug("Write Query fail!");
+    return false;
+}
+
+bool Control_3DMachine::setMachineStartSpeedX(float fStartS)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x5E, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00};
+    modbusPro.setFloat((unsigned char*)szRelativeQuery + 7, fStartS);
+    if (sendQuery(szRelativeQuery, 11))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::setMachineStartSpeedY(float fStartS)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x60, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00};
+    modbusPro.setFloat((unsigned char*)szRelativeQuery + 7, fStartS);
+    if (sendQuery(szRelativeQuery, 11))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
+bool Control_3DMachine::setMachineStartSpeedZ(float fStartS)
+{
+    modbusPro.m_strReadBuf.clear();
+    char szRelativeQuery[] = {0xCC, 0x10, 0x00, 0x62, 0x00, 0x02, 0x04, 0x00, 0x00, 0x00, 0x00};
+    modbusPro.setFloat((unsigned char*)szRelativeQuery + 7, fStartS);
+    if (sendQuery(szRelativeQuery, 11))
+    {
+        qDebug("Write Query OK!");
+        QElapsedTimer t;
+        unsigned int iCounter = 0;
+        while(iCounter < 5){
+            t.start();
+            while(t.elapsed()<200){
+                QCoreApplication::processEvents();
+            }
+            if (modbusPro.checkResponse())
+            {
+                qDebug("GetResponse OK!");
+                return true;
+            }else{
+                qDebug("GetResponse fail!iCounter=%d!", iCounter);
+            }
+            iCounter++;
+        }
+    }
+    return false;
+}
+
 void Control_3DMachine::on_pushButton_19_released()
 {
+    qDebug("Choice:%d %d!", ui->comboBox->currentIndex(), ui->comboBox_2->currentIndex());
     QString strTmp("none");
     switch(ui->comboBox->currentIndex())
     {
@@ -1351,8 +2064,6 @@ void Control_3DMachine::on_pushButton_19_released()
                 qDebug("No this Index!");
                 break;
             }
-        }else{
-
         }
         break;
     case 1:
@@ -1372,8 +2083,6 @@ void Control_3DMachine::on_pushButton_19_released()
                 qDebug("No this Index!");
                 break;
             }
-        }else{
-
         }
         break;
     case 2:
@@ -1396,8 +2105,93 @@ void Control_3DMachine::on_pushButton_19_released()
                 qDebug("No this Index!");
                 break;
             }
-        }else{
-
+        }
+        break;
+    case 3:
+        switch(ui->comboBox_2->currentIndex())
+        {
+        case 0:
+            if(getParamMotorAccX())
+            {
+                qDebug("Show AccX:%d!", modbusPro.iMotorAccX);
+                strTmp = QString::number(modbusPro.iMotorAccX);
+            }
+            break;
+        case 1:
+            if(getParamMotorAccY())
+            {
+                qDebug("Show AccY:%d!", modbusPro.iMotorAccY);
+                strTmp = QString::number(modbusPro.iMotorAccY);
+            }
+            break;
+        case 2:
+            if(getParamMotorAccZ())
+            {
+                qDebug("Show AccZ:%d!", modbusPro.iMotorAccZ);
+                strTmp = QString::number(modbusPro.iMotorAccZ);
+            }
+            break;
+        default:
+            qDebug("No this Index!");
+            break;
+        }
+        break;
+    case 4:
+        switch(ui->comboBox_2->currentIndex())
+        {
+        case 0:
+            if(getParamMotorDecX())
+            {
+                qDebug("Show DecX:%d!", modbusPro.iMotorDecX);
+                strTmp = QString::number(modbusPro.iMotorDecX);
+            }
+            break;
+        case 1:
+            if(getParamMotorDecY())
+            {
+                qDebug("Show DecY:%d!", modbusPro.iMotorDecY);
+                strTmp = QString::number(modbusPro.iMotorDecY);
+            }
+            break;
+        case 2:
+            if(getParamMotorDecZ())
+            {
+                qDebug("Show DecZ:%d!", modbusPro.iMotorDecZ);
+                strTmp = QString::number(modbusPro.iMotorDecZ);
+            }
+            break;
+        default:
+            qDebug("No this Index!");
+            break;
+        }
+        break;
+    case 5:
+        switch(ui->comboBox_2->currentIndex())
+        {
+        case 0:
+            if(getParamStartSpeedX())
+            {
+                qDebug("Show DecX:%f!", modbusPro.fStartSpeedX);
+                strTmp = QString::number(modbusPro.fStartSpeedX);
+            }
+            break;
+        case 1:
+            if(getParamStartSpeedY())
+            {
+                qDebug("Show DecY:%f!", modbusPro.fStartSpeedY);
+                strTmp = QString::number(modbusPro.fStartSpeedY);
+            }
+            break;
+        case 2:
+            if(getParamStartSpeedZ())
+            {
+                qDebug("Show DecZ:%f!", modbusPro.fStartSpeedZ);
+                strTmp = QString::number(modbusPro.fStartSpeedZ);
+            }
+            break;
+        default:
+            qDebug("No this Index!");
+            break;
         }
         break;
     default:
@@ -1409,6 +2203,7 @@ void Control_3DMachine::on_pushButton_19_released()
 
 void Control_3DMachine::on_pushButton_20_released()
 {
+    qDebug("Choice:%d %d!", ui->comboBox->currentIndex(), ui->comboBox_2->currentIndex());
     if(ui->lineEdit_5->text().isEmpty())
     {
         qDebug("Set Value is empty!");
@@ -1435,7 +2230,7 @@ void Control_3DMachine::on_pushButton_20_released()
         }
         break;
     case 1:
-        switch(ui->comboBox->currentIndex()){
+        switch(ui->comboBox_2->currentIndex()){
         case 0:
             setMachineSubdivisionX(ui->lineEdit_5->text().toInt());
             break;
@@ -1451,7 +2246,7 @@ void Control_3DMachine::on_pushButton_20_released()
         }
         break;
     case 2:
-        switch(ui->comboBox->currentIndex())
+        switch(ui->comboBox_2->currentIndex())
         {
         case 0:
             qDebug("PitchX want to set:%.02f!", ui->lineEdit_5->text().toFloat());
@@ -1468,7 +2263,119 @@ void Control_3DMachine::on_pushButton_20_released()
             break;
         }
         break;
+    case 3:
+        if(ui->lineEdit_5->text().toInt() > 0)
+        {
+            qDebug("Acc Set to:%d!", ui->lineEdit_5->text().toInt());
+            switch(ui->comboBox_2->currentIndex()){
+            case 0:
+                setMachineAccX(ui->lineEdit_5->text().toInt());
+                break;
+            case 1:
+                setMachineAccY(ui->lineEdit_5->text().toInt());
+                break;
+            case 2:
+                setMachineAccZ(ui->lineEdit_5->text().toInt());
+                break;
+            default:
+                qDebug("No this Index!");
+                break;
+            }
+        }
+        break;
+    case 4:
+        switch(ui->comboBox_2->currentIndex())
+        {
+        case 0:
+            setMachineDecX(ui->lineEdit_5->text().toInt());
+            break;
+        case 1:
+            setMachineDecY(ui->lineEdit_5->text().toInt());
+            break;
+        case 2:
+            setMachineDecZ(ui->lineEdit_5->text().toInt());
+            break;
+        default:
+            qDebug("No this Index!");
+            break;
+        }
+        break;
+    case 5:
+        switch(ui->comboBox_2->currentIndex())
+        {
+        case 0:
+            qDebug("Start SpeedX want to set:%.02f!", ui->lineEdit_5->text().toFloat());
+            setMachineStartSpeedX(ui->lineEdit_5->text().toFloat());
+            break;
+        case 1:
+            setMachineStartSpeedY(ui->lineEdit_5->text().toFloat());
+            break;
+        case 2:
+            setMachineStartSpeedZ(ui->lineEdit_5->text().toFloat());
+            break;
+        default:
+            qDebug("No this Index!");
+            break;
+        }
+        break;
     default:
         break;
+    }
+}
+
+void Control_3DMachine::on_pushButton_2_released()
+{
+    qDebug("Go to release?");
+}
+
+bool Control_3DMachine::runFile()
+{
+    int iMSecs = dataProcess.iTimeInterval;
+    if(iMSecs <= 0)
+    {
+        iMSecs = 1000;
+    }
+    QTime timeStart;
+    for(unsigned int i=0; i<dataProcess.dataList.size(); i++)
+    {
+        timeStart.restart();
+        //qDebug("TimeStart:%s!Step:%d!", timeStart.toString().toStdString().c_str(), i);
+        runStep(i);
+        while(timeStart.elapsed() < iMSecs)
+        {
+            QCoreApplication::processEvents();
+        }
+        //qDebug("TimeEnd:%s!\n", QTime::currentTime().toString().toStdString().c_str());
+    }
+    qDebug("File Ended!");
+}
+
+bool Control_3DMachine::runStep(unsigned int iStepIndex)
+{
+    bool bFlag = true;
+    if(!relativeDisXSet(dataProcess.dataList[iStepIndex].fDistanceX))
+    {
+        qDebug("Move X fail!");
+        bFlag = false;
+    }
+    if(!relativeDisYSet(dataProcess.dataList[iStepIndex].fDistanceY))
+    {
+        qDebug("Move Y fail!");
+        bFlag = false;
+    }
+    if(!relativeDisZSet(dataProcess.dataList[iStepIndex].fDistanceZ))
+    {
+        qDebug("Move Z fail!");
+        bFlag = false;
+    }
+    return bFlag;
+}
+
+void Control_3DMachine::on_pushButton_2_pressed()
+{
+    qDebug("Steps:%d!Press!", dataProcess.dataList.size());
+    if(dataProcess.dataList.size() > 3)
+    {
+        runFile();
     }
 }

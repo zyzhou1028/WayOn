@@ -129,16 +129,16 @@ void Modbus::setResponse(char szAddr, char szIndex, char szCount, char szByte1, 
 
 bool Modbus::checkResponse()
 {
-    qDebug("CheckResponse Start!Len:%d!", m_strReadBuf.length());
+
     if(m_strReadBuf.length() <= 0){
         return false;
     }
 
-    qDebug(" CRC check Data:");
-    for(int i=0; i<m_strReadBuf.length();i++)
-    {
-        qDebug("%02x", (char)m_strReadBuf.c_str()[i]);
-    }
+    //    qDebug("CheckResponse Start!Len:%d!", m_strReadBuf.length());
+    //    for(int i=0; i<m_strReadBuf.length();i++)
+    //    {
+    //        qDebug("%02x", (char)m_strReadBuf.c_str()[i]);
+    //    }
 
     short resCRC;
     unsigned char szTmp[m_strReadBuf.length() - 1];
@@ -149,6 +149,7 @@ bool Modbus::checkResponse()
     char resCRCHi=resCRC>>8;
     qDebug("CRC Check:%02x->%02x, %02x->%02x!Len:%d!", resCRCLo, m_strReadBuf.c_str()[m_strReadBuf.length() - 2], resCRCHi, m_strReadBuf.c_str()[m_strReadBuf.length() - 1], m_strReadBuf.length() - 2);
     if (m_strReadBuf.c_str()[m_strReadBuf.length() - 2]==resCRCLo &&m_strReadBuf.c_str()[m_strReadBuf.length() - 1]==resCRCHi){
+        qDebug("CRC Correct!");
         return true;
     }
     return false;
@@ -189,10 +190,10 @@ void Modbus::setFloat(unsigned char *szModbusF, float fSrc) {
     memcpy(szModbusF+1, szTmp, 1);
     memcpy(szModbusF+2, szTmp+3, 1);
     memcpy(szModbusF+3, szTmp+2, 1);
-    qDebug("Modbus float:%f!", fSrc);
-    for(int i=0; i<4; i++){
-        qDebug("%02x %02x", szModbusF[i], szTmp[i]);
-    }
+    //    qDebug("Modbus float:%f!", fSrc);
+    //    for(int i=0; i<4; i++){
+    //        qDebug("%02x %02x", szModbusF[i], szTmp[i]);
+    //    }
 }
 
 void Modbus::setReg(unsigned char *szModbusSh, short iValue) {
@@ -200,8 +201,8 @@ void Modbus::setReg(unsigned char *szModbusSh, short iValue) {
     szTmp=(unsigned char*)&iValue;
     memcpy(szModbusSh, szTmp+1, 1);
     memcpy(szModbusSh+1, szTmp, 1);
-    qDebug("Modbus Reg short:%d!", iValue);
-    for(int i=0; i<2; i++){
-        qDebug("%02x %02x", szModbusSh[i], szTmp[i]);
-    }
+    //    qDebug("Modbus Reg short:%d!", iValue);
+    //    for(int i=0; i<2; i++){
+    //        qDebug("%02x %02x", szModbusSh[i], szTmp[i]);
+    //    }
 }

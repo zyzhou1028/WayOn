@@ -5,9 +5,9 @@
 #include <QTextStream>
 
 typedef struct _OperateData{
-    int iDistanceX;
-    int iDistanceY;
-    int iDistanceZ;
+    float fDistanceX;
+    float fDistanceY;
+    float fDistanceZ;
 }OperateData;
 
 class dataprocess
@@ -19,8 +19,10 @@ public:
     int iSteps;
 
     int parse(QTextStream& dataStream);
-private:
+
     QList<OperateData> dataList;
+private:
+
 
 };
 

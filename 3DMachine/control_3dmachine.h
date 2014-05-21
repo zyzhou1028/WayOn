@@ -62,6 +62,10 @@ private slots:
 
     void on_pushButton_20_released();
 
+    void on_pushButton_2_released();
+
+    void on_pushButton_2_pressed();
+
 private:
     Ui::Control_3DMachine *ui;
     QSerialPort *comModbus;
@@ -88,12 +92,37 @@ private:
     bool getParamsPitch();
     bool getParamsSubdivision();
     bool getParamsSpeed();
+    bool getParamMotorAccX();
+    bool getParamMotorAccY();
+    bool getParamMotorAccZ();
+    bool getParamMotorDecX();
+    bool getParamMotorDecY();
+    bool getParamMotorDecZ();
+    bool getParamStartSpeedX();
+    bool getParamStartSpeedY();
+    bool getParamStartSpeedZ();
     bool getPitchResponse();
     void setPitchParams();
     bool getSubdivisionResponse();
     void setSubdivisionParams();
     bool getSpeedResponse();
+    bool getAccXResponse();
+    bool getAccYResponse();
+    bool getAccZResponse();
+    bool getDecXResponse();
+    bool getDecYResponse();
+    bool getDecZResponse();
+    bool getStartSpeedXResp();
+    bool getStartSpeedYResp();
+    bool getStartSpeedZResp();
     void setSpeedParams();
+    void setMotorAccX();
+    void setMotorAccY();
+    void setMotorAccZ();
+    void setMotorDecX();
+    void setMotorDecY();
+    void setMotorDecZ();
+
     bool sendQuery(const char* szCMD, unsigned int iLen);
     bool getResponse();
     bool testQuery();
@@ -113,6 +142,25 @@ private:
     bool setMachineSubdivisionX(short iSubdivision);
     bool setMachineSubdivisionY(short iSubdivision);
     bool setMachineSubdivisionZ(short iSubdivision);
+
+    bool setMachineAccX(short iAccX);
+    bool setMachineAccY(short iAccY);
+    bool setMachineAccZ(short iAccZ);
+
+    bool setMachineDecX(short iDecX);
+    bool setMachineDecY(short iDecY);
+    bool setMachineDecZ(short iDecZ);
+
+    bool setMachineStartSpeedX(float fStartS);
+    bool setMachineStartSpeedY(float fStartS);
+    bool setMachineStartSpeedZ(float fStartS);
+
+    void setStartSpeedX();
+    void setStartSpeedY();
+    void setStartSpeedZ();
+
+    bool runStep(unsigned int iStepIndex);
+    bool runFile();
 
     dataprocess dataProcess;
     Modbus modbusPro;
