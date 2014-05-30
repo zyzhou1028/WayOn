@@ -26,3 +26,8 @@ HEADERS  += control_3dmachine.h \
 
 FORMS    += control_3dmachine.ui \
     aboutform.ui
+
+RESOURCES += \
+    icons/icons.qrc
+
+OTHER_FILES +=

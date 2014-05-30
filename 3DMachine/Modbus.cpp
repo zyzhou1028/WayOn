@@ -5,6 +5,10 @@
 
 Modbus::Modbus(void)
 {
+  fAbsPosX = 0;
+  fAbsPosY = 0;
+  fAbsPosZ = 0;
+
     this->pDataPacket=new DataPacket;
     memset(pDataPacket, 0x0, sizeof(_DataPacket));
 
@@ -139,7 +143,11 @@ bool Modbus::checkResponse()
     //    {
     //        qDebug("%02x", (char)m_strReadBuf.c_str()[i]);
     //    }
-
+    if(((char)(m_strReadBuf.c_str()[0])) == ((char)0xbb))
+    {
+            qDebug("Controler return PMC protocol 0xbb!");
+            return true;
+    }
     short resCRC;
     unsigned char szTmp[m_strReadBuf.length() - 1];
     memcpy((char *)szTmp, m_strReadBuf.c_str(), m_strReadBuf.length() -2);
@@ -147,14 +155,40 @@ bool Modbus::checkResponse()
     resCRC=getCRC(szTmp, m_strReadBuf.length() - 2);
     char resCRCLo=resCRC;
     char resCRCHi=resCRC>>8;
-    qDebug("CRC Check:%02x->%02x, %02x->%02x!Len:%d!", resCRCLo, m_strReadBuf.c_str()[m_strReadBuf.length() - 2], resCRCHi, m_strReadBuf.c_str()[m_strReadBuf.length() - 1], m_strReadBuf.length() - 2);
+    //qDebug("CRC Check:%02x->%02x, %02x->%02x!Len:%d!", resCRCLo, m_strReadBuf.c_str()[m_strReadBuf.length() - 2], resCRCHi, m_strReadBuf.c_str()[m_strReadBuf.length() - 1], m_strReadBuf.length() - 2);
     if (m_strReadBuf.c_str()[m_strReadBuf.length() - 2]==resCRCLo &&m_strReadBuf.c_str()[m_strReadBuf.length() - 1]==resCRCHi){
-        qDebug("CRC Correct!");
+        //qDebug("CRC Correct!");
         return true;
     }
     return false;
 }
 
+bool Modbus::checkResponse(int iLen)
+{
+    if(m_strReadBuf.length() < iLen){
+        return false;
+    }
+
+    //    qDebug("CheckResponse Start!Len:%d!", iLen);
+    //    for(int i=0; i<iLen;i++)
+    //    {
+    //        qDebug("%02x", (char)m_strReadBuf.c_str()[i]);
+    //    }
+
+    short resCRC;
+    unsigned char szTmp[iLen - 1];
+    memcpy((char *)szTmp, m_strReadBuf.c_str(), iLen -2);
+
+    resCRC=getCRC(szTmp, iLen - 2);
+    char resCRCLo=resCRC;
+    char resCRCHi=resCRC>>8;
+    //qDebug("CRC Check:%02x->%02x, %02x->%02x!Len:%d!", resCRCLo, m_strReadBuf.c_str()[iLen- 2], resCRCHi, m_strReadBuf.c_str()[iLen - 1], m_strReadBuf.length() - 2);
+    if (m_strReadBuf.c_str()[iLen - 2]==resCRCLo &&m_strReadBuf.c_str()[iLen - 1]==resCRCHi){
+        //qDebug("CRC Correct!");
+        return true;
+    }
+    return false;
+}
 
 float Modbus::getFloat(unsigned char *szModbusF) {
     float fDest;

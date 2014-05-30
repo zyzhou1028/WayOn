@@ -59,6 +59,12 @@ public:
     float iPitchX;
     float iPitchY;
     float iPitchZ;
+    float fAbsPosX;
+    float fAbsPosY;
+    float fAbsPosZ;
+    bool bDirX;
+    bool bDirY;
+    bool bDirZ;
 
     unsigned short iSubdivX;
     unsigned short iSubdivY;
@@ -72,6 +78,7 @@ public:
     void setResponse(char address,char commandCode,char dataCount,char databyte1,
                      char databyte2,char CRChi,char CRCLo);
     bool checkResponse();
+    bool checkResponse(int iLen);
     float getFloat(unsigned char *szModbusF);
     void setFloat(unsigned char *szModbusF, float fSrc) ;
     short getReg(unsigned char *szModbusSh);

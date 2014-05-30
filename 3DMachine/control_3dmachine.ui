@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>伟航3D机械控制系统</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">font: 75 12pt &quot;楷体&quot;;</string>
+  </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonTextOnly</enum>
   </property>
@@ -20,8 +23,11 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -1344,7 +1350,7 @@
      <x>0</x>
      <y>0</y>
      <width>733</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

@@ -6,6 +6,9 @@
 #include "dataprocess.h"
 #include "Modbus.h"
 
+#define ELAPSED_TIMES       6
+#define ELAPSED_INTERVAL 50
+
 namespace Ui {
 class Control_3DMachine;
 }
@@ -83,9 +86,18 @@ private:
     bool stopZLeft();
     bool moveZRight();
     bool stopZRight();
-    bool relativeDisX();
-    bool relativeDisY();
-    bool relativeDisZ();
+    bool clearMotorX();
+    bool clearMotorY();
+    bool clearMotorZ();
+    bool dirXYZQuery();
+    void setXYZDir(char szDir);
+    bool relativeDisXQuery();
+    bool relativeDisYQuery();
+    bool relativeDisZQuery();
+    bool absoluteDisXQuery();
+    bool absoluteDisYQuery();
+    bool absoluteDisZQuery();
+
 
     bool getMoveResponse();
     void getControlerParams();
@@ -103,7 +115,7 @@ private:
     bool getParamStartSpeedZ();
     bool getPitchResponse();
     void setPitchParams();
-    bool getSubdivisionResponse();
+    bool getSubdivisionResp();
     void setSubdivisionParams();
     bool getSpeedResponse();
     bool getAccXResponse();
@@ -128,9 +140,14 @@ private:
     bool testQuery();
     bool queryCoefficients();
 
-    bool relativeDisXSet(float fDis);
-    bool relativeDisYSet(float fDis);
-    bool relativeDisZSet(float fDis);
+    bool moveXRelative(float fDis);
+    bool moveYRelative(float fDis);
+    bool moveZRelative(float fDis);
+
+    bool moveXAbsolute(float fDis);
+    bool moveYAbsolute(float fDis);
+    bool moveZAbsolute(float fDis);
+
     bool setMachineSpeedX(float fSpeed);
     bool setMachineSpeedY(float fSpeed);
     bool setMachineSpeedZ(float fSpeed);
@@ -139,9 +156,9 @@ private:
     bool setMachinePitchY(float fPitch);
     bool setMachinePitchZ(float fPitch);
 
-    bool setMachineSubdivisionX(short iSubdivision);
-    bool setMachineSubdivisionY(short iSubdivision);
-    bool setMachineSubdivisionZ(short iSubdivision);
+    bool setMachineSubdivX(short iSubdiv);
+    bool setMachineSubdivY(short iSubdiv);
+    bool setMachineSubdivZ(short iSubdiv);
 
     bool setMachineAccX(short iAccX);
     bool setMachineAccY(short iAccY);
@@ -151,19 +168,30 @@ private:
     bool setMachineDecY(short iDecY);
     bool setMachineDecZ(short iDecZ);
 
-    bool setMachineStartSpeedX(float fStartS);
-    bool setMachineStartSpeedY(float fStartS);
-    bool setMachineStartSpeedZ(float fStartS);
+    bool setStartSpeedX(float fStartS);
+    bool setStartSpeedY(float fStartS);
+    bool setStartSpeedZ(float fStartS);
 
-    void setStartSpeedX();
-    void setStartSpeedY();
-    void setStartSpeedZ();
+    void recordStartSpeedX();
+    void recordStartSpeedY();
+    void recordStartSpeedZ();
 
-    bool runStep(unsigned int iStepIndex);
-    bool runFile();
+    bool runFileShifting();
+    bool set3AxleStatus(int iIndex);
+    bool setAxleXStat(int iIndex);
+    bool setAxleYStat(int iIndex);
+    bool setAxleZStat(int iIndex);
 
-    dataprocess dataProcess;
+    bool runRelativeStep(unsigned int iStepIndex);
+    bool runRelativeFile();
+
+    bool runAbsoluteStep(unsigned int iStepIndex);
+    bool runAbsoluteFile();
+
+    dataprocess dataProc;
     Modbus modbusPro;
+    bool m_bIfResp;
+    QTime m_timeTag;
 };
 
 #endif // CONTROL_3DMACHINE_H
